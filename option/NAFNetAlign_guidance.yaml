@@ -1,0 +1,77 @@
+diff_opt:
+  scheduler:
+    type: DDIM
+    num_train_timesteps: 1300
+    num_test_timesteps: 2
+    beta_start: 0.0001
+    beta_end: 0.02
+    beta_schedule: scaled_linear
+    eta: 0
+    prediction_type: 'sample'
+
+ema_rate: 0.999
+ema: True
+log_name: Defocus_delburring_initial
+
+
+Val:
+  val_datasets: '/hpc2hdd/home/hfeng108/FHX/DPDD_dataset/DPDD_Test/test'
+  val_bs: 1
+
+
+val_ckpt_path: 
+RESUME: False
+resume_checkpoint_path:
+updatelr: True
+freeze_dpt: False
+
+Trainer:
+  check_val_every_n_epoch: 15
+  accumulate_grad_batches: 1
+  max_steps: 1000000
+  accelerator: 'gpu'
+  devices: [0]
+  precision: '16-mixed'
+  strategy:  'ddp_find_unused_parameters_true'
+  log_every_n_steps: 4
+  initlr: 0.0002
+  crop_size: 320
+  num_workers: 8
+  train_datasets: '/hpc2hdd/home/hfeng108/FHX/DPDD_dataset/train 1/train'
+  train_bs: 8
+
+interpolate_mode: 'bilinear'
+
+InitModel:
+  settings:
+    img_channel: 4
+    out_channel: 3
+    width:  32
+    num_heads: [1,2,4,8]
+    enc_blk_nums: [1,1,1,6]
+    dec_blk_nums: [1,1,1,1]
+    middle_blk_num: 1
+    global_residual: False
+ 
+DepthPredictor:
+  settings:
+    img_channel: 1
+    out_channel: 1
+    width: 32
+    enc_blk_nums: [1,1,1,6]
+    dec_blk_nums: [1,1,1,1]
+    middle_blk_num: 1
+    global_residual: False
+
+Model:
+  settings:
+    img_channel: 7
+    width: 64
+    # num_heads: [1,2,4,8]
+    enc_blk_nums: [1, 1, 1, 14]
+    middle_blk_num: 1
+    dec_blk_nums: [1, 1, 1, 1]   
+    Finetune: False
+    res_50: True
+    dual: False
+

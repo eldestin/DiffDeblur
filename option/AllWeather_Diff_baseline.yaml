@@ -1,0 +1,58 @@
+diff_opt:
+  scheduler:
+    type: DDIM
+    num_train_timesteps: 1000
+    num_test_timesteps: 25
+    beta_start: 0.0001
+    beta_end: 0.02
+    beta_schedule: linear
+    eta: 0
+    
+ema_rate: 0.999
+ema: True
+log_name: AllWeather_Diff_baseline
+val_ckt_path: '/hpc2hdd/home/hfeng108/irff/IR-Diff_Baseline/logs/AllWeather_Diff_baseline/version_0/checkpoints/epoch15599-PSNR-24.733-SSIM-0.8431.ckpt'
+Val:
+  val_datasets: '/hpc2hdd/home/hfeng108/DPDD_dataset/DPDD_Test/test'
+  val_bs: 16
+
+
+val_ckpt_path: 
+RESUME: False
+resume_checkpoint_path:
+Trainer:
+  check_val_every_n_epoch: 15
+  accumulate_grad_batches: 1
+  max_steps: 1000000
+  accelerator: 'gpu'
+  devices: [0,1,2]
+  precision: '16-mixed'
+  strategy:  'ddp_find_unused_parameters_true'
+  log_every_n_steps: 4
+  initlr: 0.0003
+  crop_size: 192
+  num_workers: 8
+  train_datasets: '/hpc2hdd/home/hfeng108/DPDD_dataset/train 1/train'
+  train_bs: 48
+
+interpolate_mode: 'bilinear'
+
+InitModel:
+  settings:
+    inp_channels: 3 
+    out_channels: 3 
+    dim:  32
+    # num_blocks:  [2,4,4,6] 
+    # num_refinement_blocks:  4
+    # heads:  [1,2,4,8]
+    ffn_expansion_factor:  2
+    bias: False
+ 
+Model:
+  settings:
+    img_channel: 6
+    width: 64
+    enc_blk_nums: [1, 1, 1, 14]
+    middle_blk_num: 1
+    dec_blk_nums: [1, 1, 1, 1]
+   
